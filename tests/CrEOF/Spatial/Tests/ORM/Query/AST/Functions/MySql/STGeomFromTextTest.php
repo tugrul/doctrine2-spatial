@@ -21,29 +21,29 @@
  * SOFTWARE.
  */
 
-namespace CrEOF\Spatial\Tests\ORM\Query\AST\Functions\PostgreSql;
+namespace CrEOF\Spatial\Tests\ORM\Query\AST\Functions\MySql;
 
-use CrEOF\Spatial\PHP\Types\Geography\Point as GeographyPoint;
+use CrEOF\Spatial\PHP\Types\Geometry\LineString;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
-use CrEOF\Spatial\Tests\Fixtures\PointEntity;
-use CrEOF\Spatial\Tests\Fixtures\GeographyEntity;
+use CrEOF\Spatial\Tests\Fixtures\GeometryEntity;
 use CrEOF\Spatial\Tests\OrmTestCase;
 use Doctrine\ORM\Query;
 
 /**
- * ST_Distance_Sphere DQL function tests
+ * GeomFromText DQL function tests
  *
  * @author  Derek J. Lambert <dlambert@dereklambert.com>
  * @license http://dlambert.mit-license.org MIT
  *
  * @group dql
  */
-class STDistanceSphereTest extends OrmTestCase
+class STGeomFromTextTest extends OrmTestCase
 {
     protected function setUp()
     {
-        $this->usesEntity(self::POINT_ENTITY);
-        $this->supportsPlatform('postgresql');
+        $this->usesEntity(self::GEOMETRY_ENTITY);
+        $this->usesType('point');
+        $this->supportsPlatform('mysql');
 
         parent::setUp();
     }
@@ -51,41 +51,50 @@ class STDistanceSphereTest extends OrmTestCase
     /**
      * @group geometry
      */
-    public function testSelectSTDistanceSphereGeometry()
+    public function testPoint()
     {
-        $newYork   = new Point(-73.938611, 40.664167);
-        $losAngles = new Point(-118.2430, 34.0522);
-        $dallas    = new Point(-96.803889, 32.782778);
+        $entity1 = new GeometryEntity();
 
-        $entity1 = new PointEntity();
-
-        $entity1->setPoint($newYork);
+        $entity1->setGeometry(new Point(5, 5));
         $this->getEntityManager()->persist($entity1);
-
-        $entity2 = new PointEntity();
-
-        $entity2->setPoint($losAngles);
-        $this->getEntityManager()->persist($entity2);
-
-        $entity3 = new PointEntity();
-
-        $entity3->setPoint($dallas);
-        $this->getEntityManager()->persist($entity3);
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT p, ST_DistanceSphere(p.point, ST_GeomFromText(:p1)) FROM CrEOF\Spatial\Tests\Fixtures\PointEntity p');
+        $query  = $this->getEntityManager()->createQuery('SELECT g FROM CrEOF\Spatial\Tests\Fixtures\GeometryEntity g WHERE g.geometry = ST_GeomFromText(:p1)');
 
-        $query->setParameter('p1', 'POINT(-89.4 43.066667)', 'string');
+        $query->setParameter('p1', 'POINT(5 5)', 'string');
 
         $result = $query->getResult();
 
-        $this->assertCount(3, $result);
-        $this->assertEquals($entity1, $result[0][0]);
-        $this->assertEquals(1305895.94823465, $result[0][1]);
-        $this->assertEquals($entity2, $result[1][0]);
-        $this->assertEquals(2684082.08249337, $result[1][1]);
-        $this->assertEquals($entity3, $result[2][0]);
-        $this->assertEquals(1313754.60684762, $result[2][1]);
+        $this->assertCount(1, $result);
+        $this->assertEquals($entity1, $result[0]);
+    }
+
+    /**
+     * @group geometry
+     */
+    public function testLineString()
+    {
+        $value = array(
+            new Point(0, 0),
+            new Point(5, 5),
+            new Point(10, 10)
+        );
+
+        $entity1 = new GeometryEntity();
+
+        $entity1->setGeometry(new LineString($value));
+        $this->getEntityManager()->persist($entity1);
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
+
+        $query = $this->getEntityManager()->createQuery('SELECT g FROM CrEOF\Spatial\Tests\Fixtures\GeometryEntity g WHERE g.geometry = ST_GeomFromText(:p1)');
+
+        $query->setParameter('p1', 'LINESTRING(0 0,5 5,10 10)', 'string');
+
+        $result = $query->getResult();
+
+        $this->assertCount(1, $result);
+        $this->assertEquals($entity1, $result[0]);
     }
 }

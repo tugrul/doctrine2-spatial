@@ -80,7 +80,7 @@ class MBRContainsTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT p, MBRContains(p.polygon, GeomFromText(:p1)) FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p');
+        $query  = $this->getEntityManager()->createQuery('SELECT p, MBRContains(p.polygon, ST_GeomFromText(:p1)) FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p');
 
         $query->setParameter('p1', 'POINT(2 2)', 'string');
 
@@ -124,7 +124,7 @@ class MBRContainsTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRContains(p.polygon, GeomFromText(:p1)) = 1');
+        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRContains(p.polygon, ST_GeomFromText(:p1)) = 1');
 
         $query->setParameter('p1', 'POINT(6 6)', 'string');
 
@@ -135,7 +135,7 @@ class MBRContainsTest extends OrmTestCase
         $this->assertEquals($entity2, $result[1]);
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRContains(p.polygon, GeomFromText(:p1)) = 1');
+        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRContains(p.polygon, ST_GeomFromText(:p1)) = 1');
 
         $query->setParameter('p1', 'POINT(2 2)', 'string');
 

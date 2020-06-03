@@ -64,7 +64,7 @@ class GLengthTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT l, GLength(l.lineString) FROM CrEOF\Spatial\Tests\Fixtures\LineStringEntity l');
+        $query  = $this->getEntityManager()->createQuery('SELECT l, ST_Length(l.lineString) FROM CrEOF\Spatial\Tests\Fixtures\LineStringEntity l');
         $result = $query->getResult();
 
         $this->assertCount(1, $result);
@@ -89,7 +89,7 @@ class GLengthTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT l FROM CrEOF\Spatial\Tests\Fixtures\LineStringEntity l WHERE GLength(GeomFromText(:p1)) > GLength(l.lineString)');
+        $query  = $this->getEntityManager()->createQuery('SELECT l FROM CrEOF\Spatial\Tests\Fixtures\LineStringEntity l WHERE ST_Length(ST_GeomFromText(:p1)) > ST_Length(l.lineString)');
 
         $query->setParameter('p1', 'LINESTRING(0 0,1 1,2 2,3 3,4 4,5 5)', 'string');
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2015 Derek J. Lambert
+ * Copyright (C) 2012 Derek J. Lambert
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,43 +21,23 @@
  * SOFTWARE.
  */
 
-namespace CrEOF\Spatial\Tests\DBAL\Platform;
+namespace CrEOF\Spatial\ORM\Query\AST\Functions\MySql;
 
-use CrEOF\Spatial\Exception\UnsupportedPlatformException;
-use CrEOF\Spatial\Tests\OrmMockTestCase;
-use Doctrine\DBAL\Types\Type;
-
-use Doctrine\ORM\Tools\SchemaTool;
-use CrEOF\Spatial\DBAL\Types\Geometry\PointType;
-use CrEOF\Spatial\Tests\Fixtures\PointEntity;
+use CrEOF\Spatial\ORM\Query\AST\Functions\AbstractSpatialDQLFunction;
 
 /**
- * Spatial platform tests
+ * Area DQL function
  *
  * @author  Derek J. Lambert <dlambert@dereklambert.com>
  * @license http://dlambert.mit-license.org MIT
- *
- * @group geometry
  */
-class PlatformTest extends OrmMockTestCase
+class STArea extends AbstractSpatialDQLFunction
 {
-    public function setUp()
-    {
-        if (! Type::hasType('point')) {
-            Type::addType('point', PointType::class);
-        }
+    protected $platforms = array('mysql');
 
-        parent::setUp();
-    }
+    protected $functionName = 'ST_Area';
 
-    public function testUnsupportedPlatform()
-    {
-        $this->expectException(UnsupportedPlatformException::class);
-        $this->expectExceptionMessage('DBAL platform "YourSQL" is not currently supported.');
+    protected $minGeomExpr = 1;
 
-        $metadata   = $this->getMockEntityManager()->getClassMetadata(PointEntity::class);
-        $schemaTool = new SchemaTool($this->getMockEntityManager());
-
-        $schemaTool->createSchema(array($metadata));
-    }
+    protected $maxGeomExpr = 1;
 }

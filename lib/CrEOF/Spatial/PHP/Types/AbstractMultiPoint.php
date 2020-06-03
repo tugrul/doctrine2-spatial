@@ -36,7 +36,7 @@ abstract class AbstractMultiPoint extends AbstractGeometry
     /**
      * @var array[] $points
      */
-    protected $points = array();
+    protected $points = [];
 
     /**
      * @param AbstractPoint[]|array[] $points

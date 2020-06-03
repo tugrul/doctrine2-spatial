@@ -70,20 +70,9 @@ class WrappingTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $dql = 'SELECT p, %s(p.polygon, :geometry) FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p';
+        $dql = 'SELECT p, ST_Contains(p.polygon, :geometry) FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p';
 
-        switch ($this->getPlatform()->getName()) {
-            case 'postgresql':
-                $function = 'ST_Contains';
-                break;
-            case 'mysql':
-                $function = 'Contains';
-                break;
-            default:
-                throw new UnsupportedPlatformException(sprintf('DBAL platform "%s" is not currently supported.', $this->getPlatform()->getName()));
-        }
-
-        $dql = sprintf($dql, $function);
+        $entityManager = $this->getEntityManager();
 
         $query = $this->getEntityManager()->createQuery($dql);
 

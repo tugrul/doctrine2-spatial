@@ -72,18 +72,9 @@ class GeometryWalkerTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        switch ($this->getPlatform()->getName()) {
-            case 'mysql':
-                $asBinary   = 'AsBinary';
-                $startPoint = 'StartPoint';
-                $envelope   = 'Envelope';
-                break;
-            default:
-                $asBinary   = 'ST_AsBinary';
-                $startPoint = 'ST_StartPoint';
-                $envelope   = 'ST_Envelope';
-                break;
-        }
+        $asBinary   = 'ST_AsBinary';
+        $startPoint = 'ST_StartPoint';
+        $envelope   = 'ST_Envelope';
 
         $queryString = sprintf('SELECT %s(%s(l.lineString)) FROM CrEOF\Spatial\Tests\Fixtures\LineStringEntity l', $asBinary, $startPoint);
         $query = $this->getEntityManager()->createQuery($queryString);
@@ -129,18 +120,9 @@ class GeometryWalkerTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        switch ($this->getPlatform()->getName()) {
-            case 'mysql':
-                $asText   = 'AsText';
-                $startPoint = 'StartPoint';
-                $envelope   = 'Envelope';
-                break;
-            default:
-                $asText   = 'ST_AsText';
-                $startPoint = 'ST_StartPoint';
-                $envelope   = 'ST_Envelope';
-                break;
-        }
+        $asText   = 'ST_AsText';
+        $startPoint = 'ST_StartPoint';
+        $envelope   = 'ST_Envelope';
 
         $queryString = sprintf('SELECT %s(%s(l.lineString)) FROM CrEOF\Spatial\Tests\Fixtures\LineStringEntity l', $asText, $startPoint);
         $query = $this->getEntityManager()->createQuery($queryString);

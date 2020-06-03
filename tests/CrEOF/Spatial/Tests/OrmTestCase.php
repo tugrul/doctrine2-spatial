@@ -26,14 +26,17 @@ namespace CrEOF\Spatial\Tests;
 use CrEOF\Spatial\Exception\UnsupportedPlatformException;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\SchemaTool;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Abstract ORM test class
@@ -41,7 +44,7 @@ use Doctrine\ORM\Tools\SchemaTool;
  * @author  Derek J. Lambert <dlambert@dereklambert.com>
  * @license http://dlambert.mit-license.org MIT
  */
-abstract class OrmTestCase extends \PHPUnit_Framework_TestCase
+abstract class OrmTestCase extends TestCase
 {
     const GEOMETRY_ENTITY         = 'CrEOF\Spatial\Tests\Fixtures\GeometryEntity';
     const NO_HINT_GEOMETRY_ENTITY = 'CrEOF\Spatial\Tests\Fixtures\NoHintGeometryEntity';
@@ -328,7 +331,7 @@ abstract class OrmTestCase extends \PHPUnit_Framework_TestCase
             $configuration->addCustomNumericFunction('st_crosses', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STCrosses');
             $configuration->addCustomNumericFunction('st_disjoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STDisjoint');
             $configuration->addCustomNumericFunction('st_distance', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STDistance');
-            $configuration->addCustomNumericFunction('st_distance_sphere', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STDistanceSphere');
+            $configuration->addCustomNumericFunction('st_distancesphere', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STDistanceSphere');
             $configuration->addCustomStringFunction('st_envelope', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STEnvelope');
             $configuration->addCustomStringFunction('st_geographyfromtext', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STGeographyFromText');
             $configuration->addCustomStringFunction('st_geomfromewkt', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STGeomFromEWKT');
@@ -343,17 +346,17 @@ abstract class OrmTestCase extends \PHPUnit_Framework_TestCase
         }
 
         if ($this->getPlatform()->getName() == 'mysql') {
-            $configuration->addCustomNumericFunction('area', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\Area');
-            $configuration->addCustomStringFunction('asbinary', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\AsBinary');
-            $configuration->addCustomStringFunction('astext', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\AsText');
-            $configuration->addCustomNumericFunction('contains', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\Contains');
-            $configuration->addCustomNumericFunction('disjoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\Disjoint');
-            $configuration->addCustomStringFunction('envelope', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\Envelope');
-            $configuration->addCustomStringFunction('geomfromtext', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\GeomFromText');
-            $configuration->addCustomNumericFunction('glength', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\GLength');
+            $configuration->addCustomNumericFunction('st_area', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STArea');
+            $configuration->addCustomStringFunction('st_asbinary', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STAsBinary');
+            $configuration->addCustomStringFunction('st_astext', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STAsText');
+            $configuration->addCustomNumericFunction('st_contains', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STContains');
+            $configuration->addCustomNumericFunction('st_disjoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STDisjoint');
+            $configuration->addCustomStringFunction('st_envelope', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STEnvelope');
+            $configuration->addCustomStringFunction('st_geomfromtext', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STGeomFromText');
+            $configuration->addCustomNumericFunction('st_length', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STLength');
             $configuration->addCustomNumericFunction('mbrcontains', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\MBRContains');
             $configuration->addCustomNumericFunction('mbrdisjoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\MBRDisjoint');
-            $configuration->addCustomStringFunction('startpoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\StartPoint');
+            $configuration->addCustomStringFunction('st_startpoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STStartPoint');
         }
     }
 
@@ -387,9 +390,9 @@ abstract class OrmTestCase extends \PHPUnit_Framework_TestCase
      * @throws \Exception
      * @todo: This needs cleanup
      */
-    protected function onNotSuccessfulTest(\Exception $e)
+    protected function onNotSuccessfulTest(Throwable $e)
     {
-        if (! $GLOBALS['opt_use_debug_stack'] || $e instanceof \PHPUnit_Framework_AssertionFailedError) {
+        if (! $GLOBALS['opt_use_debug_stack'] || $e instanceof AssertionFailedError) {
             throw $e;
         }
 
@@ -447,7 +450,7 @@ abstract class OrmTestCase extends \PHPUnit_Framework_TestCase
     /**
      * @return Connection
      * @throws UnsupportedPlatformException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected static function getConnection()
     {
@@ -472,7 +475,7 @@ abstract class OrmTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected static function getConnectionParameters()
     {

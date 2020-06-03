@@ -23,9 +23,12 @@
 
 namespace CrEOF\Spatial\Tests\PHP\Types\Geometry;
 
+use CrEOF\Spatial\Exception\InvalidValueException;
 use CrEOF\Spatial\PHP\Types\Geometry\LineString;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
 use CrEOF\Spatial\PHP\Types\Geometry\Polygon;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Polygon object tests
  *
@@ -34,7 +37,7 @@ use CrEOF\Spatial\PHP\Types\Geometry\Polygon;
  *
  * @group php
  */
-class PolygonTest extends \PHPUnit_Framework_TestCase
+class PolygonTest extends TestCase
 {
     public function testEmptyPolygon()
     {
@@ -226,12 +229,12 @@ class PolygonTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test Polygon with open ring
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid polygon, ring "(0 0,10 0,10 10,0 10)" is not closed
      */
     public function testOpenPolygonRing()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid polygon, ring "(0 0,10 0,10 10,0 10)" is not closed');
+
         $rings = array(
             new LineString(array(
                 new Point(0, 0),

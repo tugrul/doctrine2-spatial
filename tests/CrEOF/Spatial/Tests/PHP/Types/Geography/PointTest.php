@@ -23,7 +23,9 @@
 
 namespace CrEOF\Spatial\Tests\PHP\Types\Geography;
 
+use CrEOF\Spatial\Exception\InvalidValueException;
 use CrEOF\Spatial\PHP\Types\Geography\Point;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Point object tests
@@ -33,7 +35,7 @@ use CrEOF\Spatial\PHP\Types\Geography\Point;
  *
  * @group php
  */
-class PointTest extends \PHPUnit_Framework_TestCase
+class PointTest extends TestCase
 {
     public function testGoodNumericPoint()
     {
@@ -83,89 +85,89 @@ class PointTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test bad string parameters - invalid latitude direction
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Syntax Error] line 0, col 8: Error: Expected CrEOF\Geo\String\Lexer::T_INTEGER or CrEOF\Geo\String\Lexer::T_FLOAT, got "Q" in value "84:26:46Q"
      */
     public function testBadLatitudeDirection()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Syntax Error] line 0, col 8: Error: Expected CrEOF\Geo\String\Lexer::T_INTEGER or CrEOF\Geo\String\Lexer::T_FLOAT, got "Q" in value "84:26:46Q"');
+
         new Point('100:56:55W', '84:26:46Q');
     }
 
     /**
      * Test bad string parameters - latitude degrees greater that 90
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Range Error] Error: Degrees out of range -90 to 90 in value "92:26:46N"
      */
     public function testBadLatitudeDegrees()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Range Error] Error: Degrees out of range -90 to 90 in value "92:26:46N"');
+
         new Point('79:56:55W', '92:26:46N');
     }
 
     /**
      * Test bad string parameters - latitude minutes greater than 59
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Range Error] Error: Minutes greater than 60 in value "84:64:46N"
      */
     public function testBadLatitudeMinutes()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Range Error] Error: Minutes greater than 60 in value "84:64:46N"');
+
         new Point('108:42:55W', '84:64:46N');
     }
 
     /**
      * Test bad string parameters - latitude seconds greater than 59
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Range Error] Error: Seconds greater than 60 in value "84:23:75N"
      */
     public function testBadLatitudeSeconds()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Range Error] Error: Seconds greater than 60 in value "84:23:75N"');
+
         new Point('108:42:55W', '84:23:75N');
     }
 
     /**
      * Test bad string parameters - invalid longitude direction
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Syntax Error] line 0, col 9: Error: Expected CrEOF\Geo\String\Lexer::T_INTEGER or CrEOF\Geo\String\Lexer::T_FLOAT, got "P" in value "100:56:55P"
      */
     public function testBadLongitudeDirection()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Syntax Error] line 0, col 9: Error: Expected CrEOF\Geo\String\Lexer::T_INTEGER or CrEOF\Geo\String\Lexer::T_FLOAT, got "P" in value "100:56:55P"');
+
         new Point('100:56:55P', '84:26:46N');
     }
 
     /**
      * Test bad string parameters - longitude degrees greater than 180
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Range Error] Error: Degrees out of range -180 to 180 in value "190:56:55W"
      */
     public function testBadLongitudeDegrees()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Range Error] Error: Degrees out of range -180 to 180 in value "190:56:55W"');
+
         new Point('190:56:55W', '84:26:46N');
     }
 
     /**
      * Test bad string parameters - longitude minutes greater than 59
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Range Error] Error: Minutes greater than 60 in value "108:62:55W"
      */
     public function testBadLongitudeMinutes()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Range Error] Error: Minutes greater than 60 in value "108:62:55W"');
+
         new Point('108:62:55W', '84:26:46N');
     }
 
     /**
      * Test bad string parameters - longitude seconds greater than 59
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage [Range Error] Error: Seconds greater than 60 in value "108:53:94W"
      */
     public function testBadLongitudeSeconds()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('[Range Error] Error: Seconds greater than 60 in value "108:53:94W"');
+
         new Point('108:53:94W', '84:26:46N');
     }
 
@@ -202,65 +204,63 @@ class PointTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, (string) $point);
     }
 
-    /**
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid parameters passed to CrEOF\Spatial\PHP\Types\Geography\Point::__construct: "5", "5", "5", "5"
-     */
     public function testPointTooManyArguments()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid parameters passed to CrEOF\Spatial\PHP\Types\Geography\Point::__construct: "5", "5", "5", "5"');
+
         new Point(5, 5, 5, 5);
     }
 
-    /**
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid parameters passed to CrEOF\Spatial\PHP\Types\Geography\Point::__construct: Array, Array, "1234"
-     */
     public function testPointWrongArgumentTypes()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid parameters passed to CrEOF\Spatial\PHP\Types\Geography\Point::__construct: Array, Array, "1234"');
+
         new Point(array(), array(), '1234');
     }
 
     /**
      * Test bad numeric parameters - latitude greater than 90
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid latitude value "190", must be in range -90 to 90.
      */
     public function testBadNumericGreaterThanLatitude()
     {
-        $point = new Point(55, 190);
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid latitude value "190", must be in range -90 to 90.');
+
+        new Point(55, 190);
     }
 
     /**
      * Test bad numeric parameters - latitude less than -90
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid latitude value "-90.00001", must be in range -90 to 90.
      */
     public function testBadNumericLessThanLatitude()
     {
-        $point = new Point(55, -90.00001);
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid latitude value "-90.00001", must be in range -90 to 90.');
+
+        new Point(55, -90.00001);
     }
 
     /**
      * Test bad numeric parameters - longitude greater than 180
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid longitude value "180.134", must be in range -180 to 180.
      */
     public function testBadNumericGreaterThanLongitude()
     {
-        $point = new Point(180.134, 54);
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid longitude value "180.134", must be in range -180 to 180.');
+
+        new Point(180.134, 54);
     }
 
     /**
      * Test bad numeric parameters - longitude less than -180
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid longitude value "-230", must be in range -180 to 180.
      */
     public function testBadNumericLessThanLongitude()
     {
-        $point = new Point(-230, 54);
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid longitude value "-230", must be in range -180 to 180.');
+
+        new Point(-230, 54);
     }
 }

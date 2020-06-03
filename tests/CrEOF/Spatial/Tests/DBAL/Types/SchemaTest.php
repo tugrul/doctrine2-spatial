@@ -24,7 +24,7 @@
 namespace CrEOF\Spatial\Tests\DBAL\Types;
 
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\Query;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use CrEOF\Spatial\Tests\OrmTestCase;
 
 /**
@@ -80,7 +80,7 @@ class SchemaTest extends OrmTestCase
     }
 
     /**
-     * @return \Doctrine\ORM\Mapping\ClassMetadata[]
+     * @return ClassMetadata[]
      */
     private function getAllClassMetadata()
     {

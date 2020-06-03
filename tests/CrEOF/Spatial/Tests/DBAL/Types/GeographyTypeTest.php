@@ -127,22 +127,12 @@ class GeographyTypeTest extends OrmTestCase
         $this->assertEquals($entity, $queryEntity);
     }
 
-    /**
-     * @expectedException \PHPUnit_Framework_Error
-     */
     public function testBadGeographyValue()
     {
-        $entity = new GeographyEntity();
+        $this->expectException(\TypeError::class);
 
-        try {
-            $entity->setGeography('POINT(0 0)');
-        } catch (\TypeError $exception) {
-            throw new \PHPUnit_Framework_Error(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception->getFile(),
-                $exception->getLine()
-            );
-        }
+        $entity = new GeographyEntity();
+        $entity->setGeography('POINT(0 0)');
+
     }
 }

@@ -23,8 +23,10 @@
 
 namespace CrEOF\Spatial\Tests\PHP\Types\Spatial\Geometry;
 
+use CrEOF\Spatial\Exception\InvalidValueException;
 use CrEOF\Spatial\PHP\Types\Geometry\LineString;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
+use PHPUnit\Framework\TestCase;
 
 /**
  * LineString object tests
@@ -34,29 +36,29 @@ use CrEOF\Spatial\PHP\Types\Geometry\Point;
  *
  * @group php
  */
-class LineStringTest extends \PHPUnit_Framework_TestCase
+class LineStringTest extends TestCase
 {
     public function testEmptyLineString()
     {
-        $lineString = new LineString(array());
+        $lineString = new LineString([]);
 
         $this->assertEmpty($lineString->getPoints());
     }
 
     public function testLineStringFromObjectsToArray()
     {
-        $expected = array(
-            array(0, 0),
-            array(1, 1),
-            array(2, 2),
-            array(3, 3)
-        );
-        $lineString = new LineString(array(
+        $expected = [
+            [0, 0],
+            [1, 1],
+            [2, 2],
+            [3, 3]
+        ];
+        $lineString = new LineString([
             new Point(0, 0),
             new Point(1, 1),
             new Point(2, 2),
             new Point(3, 3)
-        ));
+        ]);
 
         $this->assertCount(4, $lineString->getPoints());
         $this->assertEquals($expected, $lineString->toArray());
@@ -64,19 +66,19 @@ class LineStringTest extends \PHPUnit_Framework_TestCase
 
     public function testLineStringFromArraysGetPoints()
     {
-        $expected = array(
+        $expected = [
             new Point(0, 0),
             new Point(1, 1),
             new Point(2, 2),
             new Point(3, 3)
-        );
+        ];
         $lineString = new LineString(
-            array(
-                array(0, 0),
-                array(1, 1),
-                array(2, 2),
-                array(3, 3)
-            )
+            [
+                [0, 0],
+                [1, 1],
+                [2, 2],
+                [3, 3]
+            ]
         );
         $actual = $lineString->getPoints();
 
@@ -88,12 +90,12 @@ class LineStringTest extends \PHPUnit_Framework_TestCase
     {
         $expected = new Point(1, 1);
         $lineString = new LineString(
-            array(
-                array(0, 0),
-                array(1, 1),
-                array(2, 2),
-                array(3, 3)
-            )
+            [
+                [0, 0],
+                [1, 1],
+                [2, 2],
+                [3, 3]
+            ]
         );
         $actual = $lineString->getPoint(1);
 
@@ -104,12 +106,12 @@ class LineStringTest extends \PHPUnit_Framework_TestCase
     {
         $expected = new Point(3, 3);
         $lineString = new LineString(
-            array(
-                array(0, 0),
-                array(1, 1),
-                array(2, 2),
-                array(3, 3)
-            )
+            [
+                [0, 0],
+                [1, 1],
+                [2, 2],
+                [3, 3]
+            ]
         );
         $actual = $lineString->getPoint(-1);
 
@@ -119,12 +121,12 @@ class LineStringTest extends \PHPUnit_Framework_TestCase
     public function testLineStringFromArraysIsOpen()
     {
         $lineString = new LineString(
-            array(
-                array(0, 0),
-                array(1, 1),
-                array(2, 2),
-                array(3, 3)
-            )
+            [
+                [0, 0],
+                [1, 1],
+                [2, 2],
+                [3, 3]
+            ]
         );
 
         $this->assertFalse($lineString->isClosed());
@@ -133,12 +135,12 @@ class LineStringTest extends \PHPUnit_Framework_TestCase
     public function testLineStringFromArraysIsClosed()
     {
         $lineString = new LineString(
-            array(
-                array(0, 0),
-                array(0, 5),
-                array(5, 0),
-                array(0, 0)
-            )
+            [
+                [0, 0],
+                [0, 5],
+                [5, 0],
+                [0, 0]
+            ]
         );
 
         $this->assertTrue($lineString->isClosed());
@@ -146,25 +148,24 @@ class LineStringTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test LineString bad parameter
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid LineString Point value of type "integer"
      */
     public function testBadLineString()
     {
-        new LineString(array(1, 2, 3 ,4));
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid LineString Point value of type "integer"');
+        new LineString([1, 2, 3 ,4]);
     }
 
     public function testLineStringFromArraysToString()
     {
         $expected = '0 0,0 5,5 0,0 0';
         $lineString = new LineString(
-            array(
-                array(0, 0),
-                array(0, 5),
-                array(5, 0),
-                array(0, 0)
-            )
+            [
+                [0, 0],
+                [0, 5],
+                [5, 0],
+                [0, 0]
+            ]
         );
 
         $this->assertEquals($expected, (string) $lineString);
@@ -175,12 +176,12 @@ class LineStringTest extends \PHPUnit_Framework_TestCase
         $expected = "{\"type\":\"LineString\",\"coordinates\":[[0,0],[0,5],[5,0],[0,0]]}";
 
         $lineString = new LineString(
-            array(
-                array(0, 0),
-                array(0, 5),
-                array(5, 0),
-                array(0, 0)
-            )
+            [
+                [0, 0],
+                [0, 5],
+                [5, 0],
+                [0, 0]
+            ]
         );
         $this->assertEquals($expected, $lineString->toJson());
     }

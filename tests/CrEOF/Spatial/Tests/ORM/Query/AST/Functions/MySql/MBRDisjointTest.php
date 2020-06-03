@@ -93,7 +93,7 @@ class MBRDisjointTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT p, MBRDisjoint(p.polygon, GeomFromText(:p1)) FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p');
+        $query  = $this->getEntityManager()->createQuery('SELECT p, MBRDisjoint(p.polygon, ST_GeomFromText(:p1)) FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p');
 
         $query->setParameter('p1', 'POLYGON((5 5,7 5,7 7,5 7,5 5))', 'string');
 
@@ -153,7 +153,7 @@ class MBRDisjointTest extends OrmTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRDisjoint(p.polygon, GeomFromText(:p1)) = 1');
+        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRDisjoint(p.polygon, ST_GeomFromText(:p1)) = 1');
 
         $query->setParameter('p1', 'POLYGON((5 5,7 5,7 7,5 7,5 5))', 'string');
 
@@ -163,7 +163,7 @@ class MBRDisjointTest extends OrmTestCase
         $this->assertEquals($entity3, $result[0]);
         $this->getEntityManager()->clear();
 
-        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRDisjoint(p.polygon, GeomFromText(:p1)) = 1');
+        $query  = $this->getEntityManager()->createQuery('SELECT p FROM CrEOF\Spatial\Tests\Fixtures\PolygonEntity p WHERE MBRDisjoint(p.polygon, ST_GeomFromText(:p1)) = 1');
 
         $query->setParameter('p1', 'POLYGON((15 15,17 15,17 17,15 17,15 15))', 'string');
 

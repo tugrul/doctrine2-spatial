@@ -23,6 +23,7 @@
 
 namespace CrEOF\Spatial\Tests\DBAL\Types;
 
+use CrEOF\Spatial\Exception\InvalidValueException;
 use Doctrine\ORM\Query;
 use CrEOF\Spatial\PHP\Types\Geometry\LineString;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
@@ -174,12 +175,11 @@ class GeometryTypeTest extends OrmTestCase
         $this->assertEquals($entity, $queryEntity);
     }
 
-    /**
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Geometry column values must implement GeometryInterface
-     */
     public function testBadGeometryValue()
     {
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Geometry column values must implement GeometryInterface');
+
         $entity = new NoHintGeometryEntity();
 
         $entity->setGeometry('POINT(0 0)');

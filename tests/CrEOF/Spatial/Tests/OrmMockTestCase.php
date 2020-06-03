@@ -6,11 +6,14 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Driver\PDOSqlite\Driver as PDOSqliteDriver;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Common test code
  */
-abstract class OrmMockTestCase extends \PHPUnit_Framework_TestCase
+abstract class OrmMockTestCase extends TestCase
 {
     protected $mockEntityManager;
 
@@ -21,10 +24,10 @@ abstract class OrmMockTestCase extends \PHPUnit_Framework_TestCase
 
     protected function getMockConnection()
     {
-        $driver   = $this->getMockBuilder('Doctrine\DBAL\Driver\PDOSqlite\Driver')
+        $driver = $this->getMockBuilder(PDOSqliteDriver::class)
                         ->setMethods(array('getDatabasePlatform'))
                         ->getMock();
-        $platform = $this->getMockBuilder('Doctrine\DBAL\Platforms\SqlitePlatform')
+        $platform = $this->getMockBuilder(SqlitePlatform::class)
                         ->setMethods(array('getName'))
                         ->getMock();
 

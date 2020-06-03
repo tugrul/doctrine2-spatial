@@ -43,7 +43,7 @@ class FileSQLLogger implements SQLLogger
     /**
      * {@inheritdoc}
      */
-    public function startQuery($sql, array $params = null, array $types = null)
+    public function startQuery($sql, ?array $params = null, array $types = null)
     {
         file_put_contents($this->filename, $sql . PHP_EOL, FILE_APPEND);
 

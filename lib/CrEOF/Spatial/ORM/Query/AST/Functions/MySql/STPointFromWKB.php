@@ -1,6 +1,5 @@
 <?php
 /**
- * Copyright (C) 2012 Derek J. Lambert
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +20,22 @@
  * SOFTWARE.
  */
 
-namespace CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql;
+namespace CrEOF\Spatial\ORM\Query\AST\Functions\MySql;
 
 use CrEOF\Spatial\ORM\Query\AST\Functions\AbstractSpatialDQLFunction;
-
 /**
- * ST_Distance_Sphere DQL function
+ * PointFromWKB function
  *
- * @author  Derek J. Lambert <dlambert@dereklambert.com>
- * @license http://dlambert.mit-license.org MIT
+ * @author  
+ * @license 
  */
-class STDistanceSphere extends AbstractSpatialDQLFunction
+class STPointFromWKB extends AbstractSpatialDQLFunction
 {
-    protected $platforms = array('postgresql');
+    protected $platforms = array('mysql');
 
-    protected $functionName = 'ST_DistanceSphere';
+    protected $functionName = 'ST_PointFromWKB';
 
-    protected $minGeomExpr = 2;
+    protected $minGeomExpr = 1;
 
-    protected $maxGeomExpr = 2;
+    protected $maxGeomExpr = 1;
 }

@@ -1,5 +1,6 @@
 <?php
 /**
+ * Copyright (C) 2015 Mohammad Heydari
  * Copyright (C) 2012 Derek J. Lambert
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,23 +22,24 @@
  * SOFTWARE.
  */
 
-namespace CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql;
+namespace CrEOF\Spatial\ORM\Query\AST\Functions\MySql;
 
 use CrEOF\Spatial\ORM\Query\AST\Functions\AbstractSpatialDQLFunction;
 
 /**
- * ST_Distance_Sphere DQL function
+ * PointN DQL function
+ * Return N-th point from LineString
  *
- * @author  Derek J. Lambert <dlambert@dereklambert.com>
- * @license http://dlambert.mit-license.org MIT
+ * @author  Mohammad Heydari <mdh.heydari@gmail.com>
+ * @license http://mdhheydari.mit-license.org MIT
  */
-class STDistanceSphere extends AbstractSpatialDQLFunction
+class STPointN extends AbstractSpatialDQLFunction
 {
-    protected $platforms = array('postgresql');
+    protected $platforms = array('mysql');
 
-    protected $functionName = 'ST_DistanceSphere';
+    protected $functionName = 'ST_PointN';
 
-    protected $minGeomExpr = 2;
+    protected $minGeomExpr = 1;
 
-    protected $maxGeomExpr = 2;
+    protected $maxGeomExpr = 1;
 }

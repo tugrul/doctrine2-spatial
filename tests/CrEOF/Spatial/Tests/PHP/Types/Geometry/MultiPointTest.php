@@ -23,8 +23,10 @@
 
 namespace CrEOF\Spatial\Tests\PHP\Types\Spatial\Geometry;
 
+use CrEOF\Spatial\Exception\InvalidValueException;
 use CrEOF\Spatial\PHP\Types\Geometry\MultiPoint;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
+use PHPUnit\Framework\TestCase;
 
 /**
  * MultiPoint object tests
@@ -34,7 +36,7 @@ use CrEOF\Spatial\PHP\Types\Geometry\Point;
  *
  * @group php
  */
-class MultiPointTest extends \PHPUnit_Framework_TestCase
+class MultiPointTest extends TestCase
 {
     public function testEmptyMultiPoint()
     {
@@ -146,13 +148,13 @@ class MultiPointTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test MultiPoint bad parameter
-     *
-     * @expectedException        \CrEOF\Spatial\Exception\InvalidValueException
-     * @expectedExceptionMessage Invalid MultiPoint Point value of type "integer"
      */
     public function testBadLineString()
     {
-        new MultiPoint(array(1, 2, 3 ,4));
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid MultiPoint Point value of type "integer"');
+
+        new MultiPoint([1, 2, 3 ,4]);
     }
 
     public function testMultiPointFromArraysToString()
