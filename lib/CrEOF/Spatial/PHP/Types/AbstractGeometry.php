@@ -26,13 +26,15 @@ namespace CrEOF\Spatial\PHP\Types;
 use CrEOF\Spatial\Exception\InvalidValueException;
 use CrEOF\Spatial\PHP\Types\Geometry\GeometryInterface;
 
+use JsonSerializable;
+
 /**
  * Abstract geometry object for spatial types
  *
  * @author  Derek J. Lambert <dlambert@dereklambert.com>
  * @license http://dlambert.mit-license.org MIT
  */
-abstract class AbstractGeometry implements GeometryInterface
+abstract class AbstractGeometry implements GeometryInterface, JsonSerializable
 {
     /**
      * @var int
@@ -60,10 +62,17 @@ abstract class AbstractGeometry implements GeometryInterface
      */
     public function toJson()
     {
-        $json['type'] = $this->getType();
-        $json['coordinates'] = $this->toArray();
-        return json_encode($json);
+        return json_encode($this);
     }
+
+    public function jsonSerialize()
+    {
+        return [
+            'type' => $this->getType(),
+            'coordinates' => $this->toArray()
+        ];
+    }
+
 
     /**
      * @return null|int
