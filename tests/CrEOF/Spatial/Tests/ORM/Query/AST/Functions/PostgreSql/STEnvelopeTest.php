@@ -54,36 +54,36 @@ class STEnvelopeTest extends OrmTestCase
     public function testSelectSTEnvelope()
     {
         $entity1 = new PolygonEntity();
-        $rings1 = array(
-            new LineString(array(
+        $rings1 = [
+            new LineString([
                 new Point(0, 0),
                 new Point(10, 0),
                 new Point(10, 10),
                 new Point(0, 10),
                 new Point(0, 0)
-            ))
-        );
+            ])
+        ];
 
         $entity1->setPolygon(new Polygon($rings1));
         $this->getEntityManager()->persist($entity1);
 
         $entity2 = new PolygonEntity();
-        $rings2 = array(
-            new LineString(array(
+        $rings2 = [
+            new LineString([
                 new Point(0, 0),
                 new Point(10, 0),
                 new Point(10, 10),
                 new Point(0, 10),
                 new Point(0, 0)
-            )),
-            new LineString(array(
+            ]),
+            new LineString([
                 new Point(5, 5),
                 new Point(7, 5),
                 new Point(7, 7),
                 new Point(5, 7),
                 new Point(5, 5)
-            ))
-        );
+            ])
+        ];
 
         $entity2->setPolygon(new Polygon($rings2));
         $this->getEntityManager()->persist($entity2);
@@ -103,36 +103,36 @@ class STEnvelopeTest extends OrmTestCase
     public function testSTEnvelopeWhereParameter()
     {
         $entity1 = new PolygonEntity();
-        $rings1 = array(
-            new LineString(array(
+        $rings1 = [
+            new LineString([
                 new Point(0, 0),
                 new Point(10, 0),
                 new Point(10, 10),
                 new Point(0, 10),
                 new Point(0, 0)
-            )),
-            new LineString(array(
+            ]),
+            new LineString([
                 new Point(5, 5),
                 new Point(7, 5),
                 new Point(7, 7),
                 new Point(5, 7),
                 new Point(5, 5)
-            ))
-        );
+            ])
+        ];
 
         $entity1->setPolygon(new Polygon($rings1));
         $this->getEntityManager()->persist($entity1);
 
         $entity2 = new PolygonEntity();
-        $rings2 = array(
-            new LineString(array(
+        $rings2 = [
+            new LineString([
                 new Point(5, 5),
                 new Point(7, 5),
                 new Point(7, 7),
                 new Point(5, 7),
                 new Point(5, 5)
-            ))
-        );
+            ])
+        ];
 
         $entity2->setPolygon(new Polygon($rings2));
         $this->getEntityManager()->persist($entity2);

@@ -24,6 +24,7 @@
 namespace CrEOF\Spatial\Tests;
 
 use CrEOF\Spatial\Exception\UnsupportedPlatformException;
+use CrEOF\Spatial\ORM\Query\AST\SpatialFunction;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -299,7 +300,7 @@ abstract class OrmTestCase extends TestCase
         foreach (array_keys($this->usedEntities) as $entityClass) {
             if (! isset(static::$createdEntities[$entityClass])) {
                 static::$createdEntities[$entityClass] = true;
-                $classes[]                             = $this->getEntityManager()->getClassMetadata($entityClass);
+                $classes[] = $this->getEntityManager()->getClassMetadata($entityClass);
             }
         }
 
@@ -315,48 +316,13 @@ abstract class OrmTestCase extends TestCase
     {
         $configuration = $this->getEntityManager()->getConfiguration();
 
-        if ($this->getPlatform()->getName() == 'postgresql') {
-            $configuration->addCustomStringFunction('geometry', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\Geometry');
-            $configuration->addCustomStringFunction('st_asbinary', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STAsBinary');
-            $configuration->addCustomStringFunction('st_astext', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STAsText');
-            $configuration->addCustomNumericFunction('st_area', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STArea');
-            $configuration->addCustomNumericFunction('st_buffer', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STBuffer');
-            $configuration->addCustomStringFunction('st_centroid', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STCentroid');
-            $configuration->addCustomStringFunction('st_closestpoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STClosestPoint');
-            $configuration->addCustomStringFunction('st_collect', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STCollect');
-            $configuration->addCustomNumericFunction('st_contains', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STContains');
-            $configuration->addCustomNumericFunction('st_containsproperly', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STContainsProperly');
-            $configuration->addCustomNumericFunction('st_covers', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STCovers');
-            $configuration->addCustomNumericFunction('st_coveredby', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STCoveredBy');
-            $configuration->addCustomNumericFunction('st_crosses', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STCrosses');
-            $configuration->addCustomNumericFunction('st_disjoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STDisjoint');
-            $configuration->addCustomNumericFunction('st_distance', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STDistance');
-            $configuration->addCustomNumericFunction('st_distancesphere', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STDistanceSphere');
-            $configuration->addCustomStringFunction('st_envelope', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STEnvelope');
-            $configuration->addCustomStringFunction('st_geographyfromtext', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STGeographyFromText');
-            $configuration->addCustomStringFunction('st_geomfromewkt', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STGeomFromEWKT');
-            $configuration->addCustomStringFunction('st_geomfromtext', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STGeomFromText');
-            $configuration->addCustomNumericFunction('st_length', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STLength');
-            $configuration->addCustomNumericFunction('st_linecrossingdirection', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STLineCrossingDirection');
-            $configuration->addCustomStringFunction('st_makeenvelope', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STMakeEnvelope');
-            $configuration->addCustomStringFunction('st_overlaps', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STOverlaps');
-            $configuration->addCustomStringFunction('st_snaptogrid', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STSnapToGrid');
-            $configuration->addCustomStringFunction('st_startpoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STStartPoint');
-            $configuration->addCustomStringFunction('st_summary', 'CrEOF\Spatial\ORM\Query\AST\Functions\PostgreSql\STSummary');
-        }
 
-        if ($this->getPlatform()->getName() == 'mysql') {
-            $configuration->addCustomNumericFunction('st_area', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STArea');
-            $configuration->addCustomStringFunction('st_asbinary', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STAsBinary');
-            $configuration->addCustomStringFunction('st_astext', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STAsText');
-            $configuration->addCustomNumericFunction('st_contains', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STContains');
-            $configuration->addCustomNumericFunction('st_disjoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STDisjoint');
-            $configuration->addCustomStringFunction('st_envelope', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STEnvelope');
-            $configuration->addCustomStringFunction('st_geomfromtext', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STGeomFromText');
-            $configuration->addCustomNumericFunction('st_length', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STLength');
-            $configuration->addCustomNumericFunction('mbrcontains', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\MBRContains');
-            $configuration->addCustomNumericFunction('mbrdisjoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\MBRDisjoint');
-            $configuration->addCustomStringFunction('st_startpoint', 'CrEOF\Spatial\ORM\Query\AST\Functions\MySql\STStartPoint');
+        foreach (SpatialFunction::FUNCTION_LIST as $key => $value) {
+            if (!empty($value['numeric'])) {
+                $configuration->addCustomNumericFunction($key, SpatialFunction::class);
+            } else {
+                $configuration->addCustomStringFunction($key, SpatialFunction::class);
+            }
         }
     }
 
@@ -482,8 +448,8 @@ abstract class OrmTestCase extends TestCase
         $parameters           = static::getCommonConnectionParameters();
         $parameters['dbname'] = $GLOBALS['db_name'];
 
-        $connection           = DriverManager::getConnection($parameters);
-        $dbName               = $connection->getDatabase();
+        $connection = DriverManager::getConnection($parameters);
+        $dbName = $connection->getDatabase();
 
         $connection->close();
 
