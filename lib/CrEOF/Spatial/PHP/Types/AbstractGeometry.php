@@ -108,8 +108,10 @@ abstract class AbstractGeometry implements GeometryInterface, JsonSerializable
             case ($point instanceof AbstractPoint):
                 return $point->toArray();
                 break;
-            case (is_array($point) && count($point) == 2 && is_numeric($point[0]) && is_numeric($point[1])):
-                return array_values($point);
+                // lat, lng
+                // lat, lng, alt
+            case (is_array($point) && count($point) > 1 && count($point) < 4 && is_numeric($point[0]) && is_numeric($point[1])):
+                return [$point[0], $point[1]]; // alt value is ignored
                 break;
             default:
                 throw new InvalidValueException(sprintf('Invalid %s Point value of type "%s"', $this->getType(), (is_object($point) ? get_class($point) : gettype($point))));
