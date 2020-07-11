@@ -91,7 +91,7 @@ class SpatialFunction extends FunctionNode
         'st_pointfromwkb' => ['platforms' => [self::PLATFORM_MYSQL => ['max' => 3],
             self::PLATFORM_PGSQL => ['max' => 2]], 'min' => 1],
         'st_perimeter' => ['platforms' => [self::PLATFORM_PGSQL], 'min' => 1, 'max' => 1],
-        'st_point' => 'ST_MakePoint',
+        'st_point' => 'st_makepoint',
         'st_linecrossingdirection' => ['platforms' => [self::PLATFORM_PGSQL], 'min' => 2, 'max' => 2, 'numeric' => true],
         'st_lineinterpolatepoint' => ['platforms' => [self::PLATFORM_PGSQL], 'min' => 2, 'max' => 2],
         'st_linelocatepoint' => ['platforms' => [self::PLATFORM_PGSQL], 'min' => 2, 'max' => 2],
