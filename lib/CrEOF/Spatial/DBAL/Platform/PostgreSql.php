@@ -96,15 +96,12 @@ class PostgreSql extends AbstractPlatform
      * @param string              $sqlExpr
      *
      * @return GeometryInterface
-     * @throws InvalidValueException
      */
     public function convertBinaryToPHPValue(AbstractSpatialType $type, $sqlExpr)
     {
-        if (! is_resource($sqlExpr)) {
-            throw new InvalidValueException(sprintf('Invalid resource value "%s"', $sqlExpr));
+        if (is_resource($sqlExpr)) {
+            $sqlExpr = stream_get_contents($sqlExpr);
         }
-
-        $sqlExpr = stream_get_contents($sqlExpr);
 
         return parent::convertBinaryToPHPValue($type, $sqlExpr);
     }
